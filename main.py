@@ -1,15 +1,22 @@
-#Pydantic
 
+#Python
+from datetime import datetime
+import pytz
+
+
+#Pydantic
 from pydantic import BaseModel, Field, EmailStr
 
 #FastAPI
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Path
+from fastapi import Path, Body
 
 
-app = FastAPI
+app = FastAPI()
 
+
+japan_timezone = pytz.timezone('Asia/Tokyo')
 
 class UserBase(BaseModel):
     user_id: int = Field(..., ge= 0)
@@ -20,32 +27,65 @@ class User(UserBase):
     last_name: str = Field(..., min_length=1, max_length=15)
     gived_name: str = Field(..., min_length=1, max_length=15)
     email: EmailStr = Field(...)
+
+    class Config:								
+        schema_extra = {
+            'example' : {
+                'user_id': 1,
+                'nick_name': 'Pochama',
+                'age': 18,
+                'last_name' : 'Popo',
+                'gived_name': 'Chamachama',
+                'email': 'pochama@email.com'
+                }
+        }
     
 class UserOutput(UserBase):
     pass
 
 class Tweet(BaseModel):
-    date: 
+    create_date = datetime.now(japan_timezone)	                            ### No type
+    text: str = Field(..., min_length=1, max_length=256)
+    creator_id: int = Field(...)                                   ### Check user_id
+    creator_nickname: str = Field(...)                               ### Check nick_name
 
-@app.get(path= '/', title= 'home', description= 'This is Tweeter s Home page', satus_code= status.HTTP_200_OK)
+    class Config:								
+        schema_extra = {
+            'example' : {
+                'text': 'parangaricutirimicuaro',
+                'creator_id': 1,
+                'creator_nickname':'Pochama',
+                }
+        }
+
+
+
+
+@app.get(path= "/", status_code= status.HTTP_200_OK)
 #'''home'''
-def home():
+async def home():
     return {'message': 'Welcome to the home page'}
 
 
 
-@app.post(path= '/User/create-user', title= 'Create User', description= 'API for create a user', satus_code= status.HTTP_201_CREATED) 
+@app.post(path= '/User/create-user', response_model = UserOutput, status_code= status.HTTP_201_CREATED) 
 #'''Crear usuario'''
-def create_user():
-    pass
-
+def create_user(user:User= Body(...)):
+    return user
 
 
 #@app.get()
-#'''Ver Usuario'''
+#'''Ver todos los Usuarios'''
+
+#@app.get()
+#'''Ver Usuario especifico'''
 
 #@app.put() 
 #'''Actualizar usuario'''
+
+#@app.put() 
+#'''Borrar usuario'''
+
 
 
 #@app.post() 
@@ -56,3 +96,6 @@ def create_user():
 
 #@app.put() 
 #'''Modificar tweet'''
+
+#@app.put() 
+#'''Borrar tweet'''
