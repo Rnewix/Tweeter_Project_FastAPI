@@ -137,19 +137,19 @@ tweeter_users.append(try_user5)
 
 
 #--------------------------------------------------------------------------------------------------------
-#paths
+#paths operations
 #--------------------------------------------------------------------------------------------------------
 
-
-
 #home
-@app.get(path= "/", status_code= status.HTTP_200_OK)
+@app.get(path= "/", status_code= status.HTTP_200_OK, summary="The home page and all tweets", tags=['home'])
 async def home():
     return 'Welcome to the home page'
 
 
+#----Users-------
+
 #Crear usuario
-@app.post(path= '/create-user', response_model = UserOutput, status_code= status.HTTP_201_CREATED) 
+@app.post(path= '/create-user', response_model = UserOutput, status_code= status.HTTP_201_CREATED, summary="Page for user creation", tags=['Users']) 
 async def create_user(
     user_id: UUID = Form(...),
     nick_name: str = Form(...),
@@ -176,7 +176,7 @@ async def create_user(
 
 
 #Ver todos los Usuarios                                                  XXXX
-@app.get(path= '/users', status_code= status.HTTP_200_OK)
+@app.get(path= '/users', status_code= status.HTTP_200_OK, summary="Page for see all users", tags=['Users'])
 async def users():
 #    global tweeter_users
 #    all_users: List[str]
@@ -191,7 +191,7 @@ async def users():
 
 
 #Ver Usuario especifico                                                   xxx
-@app.get(path= '/users/search/{user_name}}', status_code=status.HTTP_302_FOUND)
+@app.get(path= '/users/search/{user_name}}', status_code=status.HTTP_302_FOUND, summary="Page for search a especific user", tags=['Users'])
 async def user_search(user_name: str= Path(..., min_length=1, max_length=15)):
     users: List[str]
     for i in tweeter_users:
@@ -207,7 +207,7 @@ async def user_search(user_name: str= Path(..., min_length=1, max_length=15)):
 
 
 #Actualizar usuario                                                       xxxx
-@app.put(path='/update-user/{user_id}}', status_code=status.HTTP_202_ACCEPTED) 
+@app.put(path='/update-user/{user_id}}', status_code=status.HTTP_202_ACCEPTED, summary="Page for User update data", tags=['Users']) 
 async def update_user(
     user_id: UUID = Path(...),
     nick_name: str = Form(...),                              #Quiero que como datos default entren los datos ya creados previamente por el usuario  
@@ -238,34 +238,34 @@ async def update_user(
 
 
 #Borrar usuario    
-#@app.delete(path='/delete-user/{user_id}}', status_code=status.HTTP_202_ACCEPTED) 
+#@app.delete(path='/delete-user/{user_id}}', status_code=status.HTTP_202_ACCEPTED, summary="page for delete user", tags=['Users']) 
 #async def delete_user():
 #    pass
 
 
 
-
-'''
-/{}
-/create-user
-/update-user/{}
-/delete-user/{}
-/users
-/users/search
-'''
-
+#----tweets--------------------------------------------------
 
 #Crear Tweet
-#@app.post(path='/create_tweet') 
+@app.post(path='/create-tweet', status_code= status.HTTP_201_CREATED, summary="Page for create tweet", tags=['Tweets']) 
+async def create_tweet():
+    pass
 
 #Ver Tweet
-#@app.get(path='/tweet/{tweet_id}')
-
+@app.get(path='/tweet/{tweet_id}', status_code= status.HTTP_200_OK, summary="Page for especific tweet", tags=['Tweets'])
+async def tweet():
+    pass
+#Search Tweet
+@app.get(path='/tweet/search', status_code= status.HTTP_302_FOUND, summary="Page for search especific tweet", tags=['Tweets'])
+async def serch_tweet():
+    pass
 #Modificar tweet
-#@app.put(path='/tweet/{tweet_id}'/update) 
-
+@app.put(path='/tweet/{tweet_id}/modify-tweet', status_code= status.HTTP_202_ACCEPTED, summary="Page for modify a tweet", tags=['Tweets']) 
+async def modify_tweet():
+    pass
 
 #Borrar tweet
-#@app.put(path='/tweet/{tweet_id}'/delete) 
-
+@app.delete(path='/tweet/{tweet_id}/delete-tweet', status_code= status.HTTP_202_ACCEPTED, summary="Page for modify a tweet", tags=['Tweets']) 
+async def delete_tweet():
+    pass
 
